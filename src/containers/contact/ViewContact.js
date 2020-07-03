@@ -28,7 +28,8 @@ class ViewContact extends React.Component {
         this.state = {
             searchQuery: '',
             refreshing: false,
-            failed: false
+            showAlert: false,
+            action:null
         };
 
     }
@@ -39,20 +40,22 @@ class ViewContact extends React.Component {
             this.props.getAllAccount()
         });
     }
-    componentWillmount() {
+    componentWillUnmount() {
         this._unsubscribe();
     }
     static getDerivedStateFromProps(props, state) {
-        if (props.ReducerContact.action === 'getAllAccountFailed') {
+        if (props.ReducerContact.action === 'getAllAccountFailed' && state.action !== props.ReducerContact.action) {
             return {
-                failed: true
-            }
-        } else if (props.ReducerContact.action === 'getAllAccountSuccess') {
-            return {
-                failed: false
+                showAlert: true,
+                action:props.ReducerContact.action
             }
         }
-      
+        if (props.ReducerContact.action === 'getAllAccountError' && state.action !== props.ReducerContact.action) {
+            return {
+                showAlert: true,
+                action:props.ReducerContact.action
+            }
+        }
     }
 
     setAnimation = () => {
@@ -79,7 +82,7 @@ class ViewContact extends React.Component {
         this.props.getAllAccount()
     }
     renderItem = ({ item }) => <Card item={item} removeItem={this.removeItem} props={this.props} />;
-    failedAlert = () => {
+    Alert = () => {
         Alert.alert(
             //title
             'Information',
@@ -142,7 +145,7 @@ class ViewContact extends React.Component {
                         size={20}
                     />
                 </TouchableOpacity>
-                {this.state.failed && this.failedAlert()}
+                {this.state.showAlert && this.Alert()}
 
             </View>
         );

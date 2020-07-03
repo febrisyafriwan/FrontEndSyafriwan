@@ -29,8 +29,10 @@ class EditContact extends React.Component {
             lastname_valid_input: false,
             age_valid_input: false,
             filePath: {},
+            imageChange:false,
             showAlert: false,
-            imageChange:false
+            action:null
+            
         };
     }
     componentDidMount() {
@@ -41,16 +43,26 @@ class EditContact extends React.Component {
     }
     static getDerivedStateFromProps(props, state) {
         console.log('getDerivedStateFromProps')
-        if (props.ReducerContact.action === 'editAccountSuccess') {
+        if (props.ReducerContact.action === 'editAccountSuccess'&& state.action !== props.ReducerContact.action) {
             return {
-                showAlert: true
+                showAlert: true,
+                action:props.ReducerContact.action
             }
-        }else  if (props.ReducerContact.action === 'editAccountFailed') {
+        }
+        if (props.ReducerContact.action === 'editAccountFailed'&& state.action !== props.ReducerContact.action) {
             return {
-                showAlert: true
+                showAlert: true,
+                action:props.ReducerContact.action
+            }
+        }
+        if (props.ReducerContact.action === 'editAccountError'&& state.action !== props.ReducerContact.action) {
+            return {
+                showAlert: true,
+                action:props.ReducerContact.action
             }
         }
     }
+
     handleFirstNameChange = (val) => {
         if (val.length >3) {
             this.setState({
@@ -138,6 +150,10 @@ class EditContact extends React.Component {
         console.log(body)
         this.props.editAccount(body);
     }
+    movePage = ()=>{
+        this.setState({showAlert:false});
+        this.props.navigation.navigate('Contact')
+    }
     Alert = () => {
         Alert.alert(
             //title
@@ -145,7 +161,7 @@ class EditContact extends React.Component {
             //body
             `${this.props.ReducerContact.message}`,
             [
-                { text: 'Ok', onPress: () => this.props.navigation.navigate('Contact') },
+                { text: 'Ok', onPress: () => this.movePage()},
             ],
             { cancelable: false }
         );

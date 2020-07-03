@@ -37,13 +37,22 @@ class AddContact extends React.Component {
     }
     static getDerivedStateFromProps(props, state) {
         console.log('getDerivedStateFromProps')
-        if (props.ReducerContact.action === 'addAccountSuccess') {
+        if (props.ReducerContact.action === 'addAccountSuccess'&& state.action !== props.ReducerContact.action) {
             return {
-                showAlert: true
+                showAlert: true,
+                action:props.ReducerContact.action
             }
-        } else if (props.ReducerContact.action === 'addAccountFailed') {
+        }
+        if (props.ReducerContact.action === 'addAccountFailed'&& state.action !== props.ReducerContact.action) {
             return {
-                showAlert: true
+                showAlert: true,
+                action:props.ReducerContact.action
+            }
+        }
+        if (props.ReducerContact.action === 'addAccountError'&& state.action !== props.ReducerContact.action) {
+            return {
+                showAlert: true,
+                action:props.ReducerContact.action
             }
         }
     }
@@ -127,6 +136,10 @@ class AddContact extends React.Component {
 
             this.props.addAccount(body);
         }
+        movePage = ()=>{
+            this.setState({showAlert:false});
+            this.props.navigation.navigate('Contact')
+        }
         Alert = () => {
             Alert.alert(
                 //title
@@ -134,7 +147,7 @@ class AddContact extends React.Component {
                 //body
                 `${this.props.ReducerContact.message}`,
                 [
-                    { text: 'Ok', onPress: () => this.props.navigation.navigate('Contact') },
+                    { text: 'Ok', onPress: () => this.movePage() },
                 ],
                 { cancelable: false }
             );
